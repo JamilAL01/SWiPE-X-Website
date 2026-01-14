@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)file:///C:/Users/jaboulta/Desktop/swipe_extension/popup/popup.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>SWiPE X STATS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --muted: #f3f4f6;
+      --accent: #002250;
+      --card: #ffffff;
+      --danger: #ef4444;
+      --shadow: rgba(0, 0, 0, 0.08);
+      --text: #002250;
+    }
+
+    body.dark {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --muted: #334155;
+      --accent: #ffffff;
+      --danger: #f87171;
+      --text: #f1f5f9;
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0%, #eef2ff 100%);
+      color: var(--text);
+      transition: background 0.4s ease, color 0.3s ease;
+    }
+
+    .container {
+      position: relative;
+      width: 380px;
+      padding: 18px;
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 8px 30px var(--shadow);
+      margin: 18px auto;
+      overflow: hidden;
+      transition: background 0.4s ease;
+    }
+
+    /* === Theme Toggle === */
+    .theme-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 20px;
+      transition: transform 0.2s ease;
+      color: var(--accent);
+    }
+
+    .theme-btn:hover {
+      transform: rotate(15deg);
+    }
+
+    /* === Header === */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+    }
+
+    .header::after {
+      content: "";
+      display: block;
+      height: 1px;
+      width: 80%;
+      margin: 10px auto 0;
+      background: linear-gradient(to right, transparent, #dbeafe, transparent);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Progress Bar === */
+    .session-progress {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .bar {
+      background: var(--muted);
+      border-radius: 6px;
+      height: 6px;
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    #progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+
+    #progress-label {
+      font-size: 11px;
+      color: #555;
+    }
+
+    /* === Metrics === */
+    .metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--muted);
+      font-size: 13px;
+      transition: background 0.3s ease;
+    }
+
+    .metric:hover { background: #e5e7eb; }
+
+    .label { font-weight: 500; }
+    .value { font-weight: 700; color: var(--accent); transition: transform 0.2s ease, color 0.3s ease; }
+
+    .value.updated { transform: scale(1.15); }
+
+    /* === Charts === */
+    .charts {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .chart-block {
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .chart-block h3 {
+      font-size: 13px;
+      margin: 0 0 10px;
+      font-weight: 600;
+    }
+
+    canvas { width: 100% !important; height: 180px !important; }
+    #data-pie-chart { width: 140px !important; height: 140px !important; margin: 0 auto; }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .summary-row span {
+      background: #eef2ff;
+      padding: 6px 8px;
+      border-radius: 8px;
+      color: #123;
+      font-weight: 500;
+    }
+
+    .reset-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: var(--danger);
+      color: #fff;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.1s ease;
+    }
+
+    .reset-btn:hover { background: #dc2626; transform: translateY(-1px); }
+    .reset-btn:active { transform: translateY(0); }
+
+    /* === Footer Note === */
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: #f2a659;
+      margin-top: 12px;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Swipe stats popup">
+    <button id="theme-toggle" class="theme-btn" title="Toggle theme">🌙</button>
+
+    <div class="header">
+      <img src="./Stats-light_files/icon-1.png" alt="App Logo">
+      <h1>SWiPE X STATS</h1>
+    </div>
+
+
+    <div class="metrics">
+      <!-- <div class="metric">
+        <span class="label"><b>Session Duration</b></span>
+        <span id="session-time" class="value">00:00</span>
+      </div> -->
+
+      <div class="metric">
+        <span class="label"><b>Videos Watched</b></span>
+        <span id="videos-count" class="value">24</span>
+      </div>
+
+      <div class="metric">
+        <span class="label"><b>Total Watch Time</b></span>
+        <span id="watch-time" class="value">4 min</span>
+      </div>
+
+      <div class="metric">
+        <span class="label"><b>Avg. Watch %</b></span>
+        <span id="avg-percent" class="value">32%</span>
+      </div>
+    </div>
+
+    <div class="charts">
+      <div class="chart-block">
+        <h3>Watch &amp; Engagement History</h3>
+        <canvas id="watch-history-chart" width="443" height="221" style="display: block; box-sizing: border-box; height: 177px; width: 354px;"></canvas>
+      </div>
+
+      <div class="chart-block">
+        <h3>Watched vs Wasted Time</h3>
+        <canvas id="data-pie-chart" width="175" height="175" style="display: block; box-sizing: border-box; height: 140px; width: 140px;"></canvas>
+
+        <div class="summary-row">
+          <div style="display:flex; align-items:center; gap:4px;">
+            <div style="width:12px; height:12px; background:#4CAF50; border-radius:3px;"></div>
+            <span id="watched-time">Watched: 265 s</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <div style="width:12px; height:12px; background:#E74C3C; border-radius:3px;"></div>
+            <span id="wasted-time">Wasted: 652 s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="reset-stats" class="reset-btn">Reset Stats</button>
+
+    <!-- <p class="footer-note">🕒 Active for <span id="footer-session">0m</span> - keep it up!</p> -->
+  </div>
+
+  <script src="./Stats-light_files/chart.umd.js"></script>
+  <script src="./Stats-light_files/popup.js"></script>
+
+
+</body></html>

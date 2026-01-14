@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SWiPE X</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #F8FAF9;
+      color: #1F2933;
+      margin: 0;
+      padding: 0;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2rem;
+      background-color: #0F766E;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+    }
+
+    header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: #0F766E;
+      padding: 4px;
+    }
+
+    header h1 {
+      margin: 0 1rem;
+      font-size: 3rem;
+      color: #fff;
+      flex: 1;
+    }
+    
+    body h2 {
+      color: #156962;
+    }
+
+    .install-link {
+      background-color: #F8FAF9;
+      color: #0F766E;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      text-align: left;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto;   
+      width: 150px;
+      height: auto;
+    }
+
+    .tagline {
+      text-align: center;
+      margin: 0.3rem 0 1rem 0;
+      color: #0F766E;
+      font-size: 1.1rem;
+    }
+
+
+    .lang-switch {
+      margin: 0;        
+      text-align: center;
+    }
+
+
+    .lang-switch button {
+      margin: 0 5px;
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #0F766E;
+      color: #fff;
+      font-weight: bold;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+
+    .lang-content {
+      display: none;
+    }
+
+    .figures {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .figure {
+      flex: 1 1 45%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 0.5rem;
+    }
+
+    .figure figcaption {
+      font-size: 1rem;
+      color: #555;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .popup-scale {
+      width: min(420px, 100%);
+      height: auto;
+    }
+
+    .popup-scale iframe {
+      width: 100%;
+      height: 480px;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+      background: transparent;
+    }
+
+
+    footer {
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 1rem;
+      color: #666;
+      text-align: center;
+    }
+
+    @media screen and (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+      header h1 {
+        font-size: 2.2rem;
+        margin: 0.5rem 0;
+      }
+      body {
+        font-size: 1rem;
+      }
+      .figure {
+        flex: 1 1 100%;
+      }
+      .popup-scale {
+        transform: scale(1.2);
+      }
+      
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div style="display:flex; align-items:center; flex-wrap:wrap;">
+    <h1>SWiPE X</h1>
+  </div>
+  <a class="install-link" href="https://github.com/yourusername/yourproject" target="_blank">
+    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 0.5rem;">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+               0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53
+               .63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+               0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27
+               c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15
+               0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+               0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+    </svg>
+    Install Extension
+  </a>
+</header>
+
+<main>
+  <img src="icon.svg" alt="SWiPE X Logo" class="logo">
+  
+  <p class="tagline">
+  <strong> Turning everyday swipes into meaningful research</strong>
+  </p>
+
+
+  <div class="lang-switch">
+    <button onclick="showLang('en')">English</button>
+    <button onclick="showLang('fr')">Français</button>
+  </div>
+
+  <div id="en" class="lang-content">
+    <h2>🎯Project Objective</h2>
+    <p>SWiPE X is a Chrome extension that analyzes anonymous user behavior while watching short videos (e.g., YouTube Shorts) to improve recommendation system performance.</p>
+
+    <h2>🫟Data Collected</h2>
+    <ul>
+      <li>Anonymous user interactions: play, pause, skip, swipe, like/dislike, share, stop, rewatch.</li>
+      <li>Basic video information: ID, channel, category, resolution, duration, watch time.</li>
+      <li>Network performance indicators: start-up time, interruptions (“stalls”).</li>
+    </ul>
+
+    <h2>🤝🏼Consent and Participation</h2>
+    <p>
+    Data collection occurs only after you explicitly accept the consent form during installation or first use of the extension. No data is collected before consent is given.<br>
+    Participation is voluntary, and you may stop participating at any time by disabling or uninstalling the extension.
+    </p>
+
+    
+    <h2>🫧What You’ll See in the Extension</h2>
+    <p>
+    When you install SWiPE X and click on the extension icon, a private dashboard opens showing a summary of your own viewing behavior.
+    This information is visible only to you.
+    </p>
+
+    <ul>
+      <li>Total number of short videos watched</li>
+      <li>Total watch time</li>
+      <li>Average watch percentage across videos</li>
+      <li>Watch percentage per video and the engagement trend</li>
+      <li>Amount of content meaningfully watched vs. quickly skipped</li>
+    </ul>
+
+    <h2>⛓️‍💥Why This Information Matters</h2>
+    <p>
+    Short-form video platforms are designed to maximize attention, often without making users aware of how their time is spent.
+    SWiPE X helps you understand your own consumption patterns by turning invisible behavior into clear, measurable indicators.
+    </p>
+
+    <p>
+    By seeing how much content you truly watch versus how much you quickly scroll past, you can better understand your engagement,
+    optimize your viewing habits, and regain control over your attention.
+    </p>
+
+    <h2>🔎How to Access Your Data </h2>
+    <p>
+    The statistics dashboard appears only when you click on the SWiPE X extension icon in your browser.
+    It does not appear automatically and does not interrupt your browsing experience.
+    </p>
+
+    <div class="figures">
+      <figure class="figure">
+        <div class="popup-scale">
+          <iframe src="Stats-light.html" title="SWiPE X statistics popup"></iframe>
+        </div>
+        <figcaption>Example of SWiPE X statistics popup</figcaption>
+      </figure>
+    </div>
+
+    <h2>🔐Privacy & Anonymity</h2>
+
+    <p>All data is anonymized and stored securely. No personal information such as names, emails, IP addresses, or devices is collected. Random session identifiers link actions within a session, but participants cannot be identified.</p>
+
+  </div>
+
+  <div id="fr" class="lang-content">
+    <h2>🎯Objectif du projet</h2>
+    <p>SWiPE X est une extension Chrome qui analyse anonymement le comportement des utilisateurs lors du visionnage de vidéos courtes (par exemple, YouTube Shorts) afin d’améliorer les performances des systèmes de recommandation.</p>
+
+    <h2>🫟Données collectées</h2>
+    <ul>
+      <li>Interactions anonymisées : lecture, pause, avance, swipe, like/dislike, partage, arrêt, revisionnage.</li>
+      <li>Informations sur les vidéos : identifiant, chaîne, catégorie, résolution, durée, temps de visionnage.</li>
+      <li>Indicateurs de performance réseau : temps de démarrage, interruptions (« stalls »).</li>
+    </ul>
+
+    <h2>🤝🏼Consentement et participation</h2>
+    <p>
+    La collecte de données a lieu uniquement après que vous avez explicitement accepté le formulaire de consentement lors de l’installation ou de la première utilisation de l’extension.<br>
+    La participation est volontaire et vous pouvez y mettre fin à tout moment en désactivant ou en désinstallant l’extension.<br>
+    Aucune donnée n’est collectée avant l’obtention du consentement.
+    </p>
+
+
+    <h2>🫧Ce que vous verrez dans l’extension</h2>
+    <p>
+    Lorsque vous installez SWiPE X et cliquez sur l’icône de l’extension, un tableau de bord privé s’ouvre et présente un résumé de votre propre comportement de visionnage.
+    Ces informations ne sont visibles que par vous.
+    </p>
+
+    <ul>
+      <li>Nombre total de vidéos courtes visionnées</li>
+      <li>Temps total de visionnage</li>
+      <li>Pourcentage moyen de visionnage sur l’ensemble des vidéos</li>
+      <li>Pourcentage de visionnage par vidéo et évolution de l’engagement</li>
+      <li>Quantité de contenu réellement regardé par rapport au contenu rapidement ignoré</li>
+    </ul>
+
+    <h2>⛓️‍💥Pourquoi ces informations sont importantes</h2>
+    <p>
+    Les plateformes de vidéos courtes sont conçues pour maximiser l’attention, souvent sans rendre les utilisateurs conscients de la manière dont leur temps est réellement utilisé.
+    SWiPE X vous aide à mieux comprendre vos habitudes de consommation en transformant des comportements invisibles en indicateurs clairs et mesurables.
+    </p>
+
+    <p>
+    En visualisant la part de contenu que vous regardez réellement par rapport à celui que vous faites défiler rapidement, vous pouvez mieux comprendre votre engagement,
+    optimiser vos habitudes de visionnage et reprendre le contrôle de votre attention.
+    </p>
+
+    <h2>🔎Comment accéder à vos données</h2>
+    <p>
+    Le tableau de bord statistique apparaît uniquement lorsque vous cliquez sur l’icône de l’extension SWiPE X dans votre navigateur.
+    Il ne s’affiche pas automatiquement et n’interrompt pas votre expérience de navigation.
+    </p>
+    
+    <div class="figures">
+      <figure class="figure">
+        <div class="popup-scale">
+          <iframe src="Stats-light.html" title="SWiPE X statistics popup"></iframe>
+        </div>
+        <figcaption>Example of SWiPE X statistics popup</figcaption>
+      </figure>
+    </div>
+
+    <h2>🔐Confidentialité et anonymat</h2>
+    <p>Toutes les données sont anonymisées et stockées de manière sécurisée. Aucune information personnelle (nom, email, IP, appareil) n’est collectée. Des identifiants de session aléatoires relient les actions dans une même session, mais il est impossible d’identifier les participants.</p>
+
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 SWiPE X - Chrome Extension
+</footer>
+
+<script>
+function showLang(lang) {
+  document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+  document.getElementById('fr').style.display = lang === 'fr' ? 'block' : 'none';
+}
+showLang('en');
+</script>
+
+</body>
+</html>

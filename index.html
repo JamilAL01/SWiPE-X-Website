@@ -48,6 +48,26 @@
       color: #fff;
       flex: 1;
     }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #ffffff; 
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .logo img {
+      height: 40px; 
+    }
+    
+    .nav-links a {
+      margin-left: 15px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
     
     body h2 {
       color: #156962;
@@ -226,6 +246,17 @@
     </svg>
     Install Extension
   </a>
+</header>
+<header class="navbar">
+  <div class="logo">
+    <img src="icon.svg" alt="Website Logo">
+  </div>
+
+  <nav class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </nav>
 </header>
 
 <main>

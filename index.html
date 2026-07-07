@@ -1,1416 +1,477 @@
-// SPDX-License-Identifier: BSD-3-Clause
-// Copyright (c) 2025, SWiPE X / COATI-DIANA
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3YLW8BRNRE"></script>
+<link rel="icon" href="icon.svg" type="image/png">
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-console.log("[SwipeExtension] Content script injected ✅");
-const API_URL = "https://swipex.inria.fr"; 
-const API_KEY = "205aeeaf6a910355d142789b7ff53b2b5219120edb6f43b724aa3d2e473836bd";
+  gtag('config', 'G-3YLW8BRNRE');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SWiPE X</title>  
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #F8FAF9;
+      color: #1F2933;
+      margin: 0;
+      padding: 0;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
 
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2rem;
+      background-color: #0F766E;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+    }
 
-// ================== TRANSLATIONS ==================
-const translations = {
- en: {
-    consentTitle: "🔒 Information and Consent to Participate",
-    consentText: `
-    <div style="text-align: left;">
+    header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: #0F766E;
+      padding: 4px;
+    }
 
-    <b>⛓️‍💥 PROJECT IDENTIFICATION</b><br><br>
-
-    <b>📌 Project initiative</b><br>
-    This experiment is initiated by the <b>Inria Centre at Université Côte d’Azur (Sophia Antipolis)</b>.
-
-    <br><br>
-    <b>📌 Project lead</b><br>
-    <b>GIROIRE Frédéric</b> – CNRS Research Director.
-
-    <br><br>
-    <b>📌 Other researchers involved</b><br>
-    - <b>MOULIÉRAC Joanna</b> – Associate Professor, Université Côte d’Azur (COATI project-team).<br>
-    - <b>TURLETTI Thierry</b> – Inria Research Director (DIANA project-team).<br>
-    - <b>BARAKAT Chadi</b> – Inria Research Director (DIANA project-team).<br>
-    - <b>ABOU LTAIF Jamil</b> – PhD student, Inria Centre at Université Côte d’Azur (COATI project-team).
-
-    <br><br>
-    <b>📌 Project teams and location of the experiment</b><br>
-    This project is conducted by the joint <b>COATI and DIANA project-teams</b>, affiliated with the <b>Inria Centre at Université Côte d’Azur</b>, located at: <i>2004 route des Lucioles, 06902 Sophia Antipolis, France</i>.
-
-    <br><br>
-    <b>📌 Project title</b><br>
-    SWiPE X
-    <br><br>
-    <b>📌 Ethical approval</b><br>
-    This project has received a <b>favorable opinion from Inria’s Operational Committee for the Evaluation of Legal and Ethical Risks (COERLE)</b>.
-
-    <br><br>
-    <b>📌 Voluntary participation</b><br>
-    Your participation in this project is <b>entirely voluntary</b>.  
-    After reading and understanding the “Data Collection Notice” below, your acceptance of this form indicates your free and informed consent to participate, without any constraint or external pressure.  
-    <br>
-    If you require additional information to make your decision, please contact the person listed below.
-
-    <br><br>
-    <hr>
-
-    <b>🔐 DATA COLLECTION NOTICE</b><br><br>
-
-    <b>📌 Purpose of data collection</b><br>
-    The purpose of this data collection is to analyze how users interact with short-form videos in order to improve the design and performance of short-video platforms.
-
-    <br><br>
-    <b>📌 Data collected</b><br>
-    If you agree to participate, the browser extension will collect:
-    <ul style="padding-left: 25px; margin-top:5px; margin-bottom:5px;">
-      <li>User interactions with Shorts videos (play, pause, resume, skip, swipe, like/dislike, share, stop, rewatch)</li>
-      <li>Video characteristics (identifier, channel, category, duration, resolution, watch time)</li>
-      <li>Quality of service indicators (startup time, playback interruptions)</li>
-    </ul>
-
-    <br>
-    <b>📌 Participation requirements</b><br>
-    Participation is limited to individuals aged <b>18 years or older</b>.  
-    If you are under 18, you must immediately uninstall the extension.
-
-    <br><br>
-    <b>📌 Use of data</b><br>
-    The collected data will be used exclusively in an <b>anonymous and aggregated form</b> for scientific research purposes, including academic publications and presentations.
-
-    <br><br>
-    <b>📌 Data storage and protection</b><br>
-    Data are collected anonymously and stored on an encrypted, password-protected storage device for a period of <b>15 years</b>, in accordance with research regulations.
-
-    <br><br>
-    <b>📌 Participants’ rights</b><br>
-    This study complies with the General Data Protection Regulation (GDPR).  
-    Due to the anonymous nature of the data, the rights of access, rectification, and deletion cannot be exercised after data collection.
-
-    <br><br>
-    <b>📩 Contact</b><br>
-    For any questions regarding the project or data collection, you may contact:<br>
-    <b>ABOU LTAIF Jamil – jamil.abou-ltaif@inria.fr</b>
-
-    <br><br>
-    </div>
-    `,
-    consentQuestion: "Do you agree to participate in this study?",
-    yes: "✅ Yes",
-    no: "❌ No",
-
-    surveyTitle: "📝 Quick Survey",
-    surveyText: "Please answer a few short questions:",
-    submit: "Submit ✅",
-    alertIncomplete: "⚠️ Please answer all required questions before submitting.",
-    q1: "1. How often do you watch YouTube Shorts?",
-    q1Options: ["-- Select --","Daily","Several times per week","Rarely","Never","Prefer not to say"],
-    q2: "2. What device do you usually use?",
-    q2Options: ["-- Select --","Desktop computer","Laptop","Smartphone","Tablet","Prefer not to say"],
-    q3: "3. What type of content do you prefer?",
-    q3Options: ["-- Select --","Comedy & Entertainment","Fashion & Lifestyle","Movies & Animation","Science & Technology","Gaming","Sports","Prefer not to say"],
-    q4: "4. Your age group?",
-    q4Options: ["-- Select --","18-25","26-35","36 and above","Prefer not to say"],
-    q5: "5. Do you often interact with Shorts?",
-    q5Options: ["-- Select --","Like or dislike","Comment on videos","Share with others","All of the above","I usually just watch without engaging","Prefer not to say"],
-  },
-  fr: {
-    consentTitle: "🔒 Information et Consentement à la Participation",
-    consentText: `
-    <div style="text-align: left;">
-
-    <b>⛓️‍💥 IDENTIFICATION DU PROJET</b><br><br>
-
-    <b>📌 Initiative du projet</b><br>
-    Cette expérimentation est initiée par le <b>Centre Inria d’Université Côte d’Azur (Sophia Antipolis)</b>.
-
-    <br><br>
-    <b>📌 Responsable du projet</b><br>
-    <b>GIROIRE Frédéric</b> – Directeur de recherche CNRS.
-
-    <br><br>
-    <b>📌 Autres scientifiques impliqués</b><br>
-    - <b>MOULIÉRAC Joanna</b> – Maître de conférences, Université Côte d’Azur (équipe-projet COATI).<br>
-    - <b>TURLETTI Thierry</b> – Directeur de recherche Inria (équipe-projet DIANA).<br>
-    - <b>BARAKAT Chadi</b> – Directeur de recherche Inria (équipe-projet DIANA).<br>
-    - <b>ABOU LTAIF Jamil</b> – Doctorant, Centre Inria d’Université Côte d’Azur (équipe-projet COATI).
-
-    <br><br>
-    <b>📌 Équipes-projet et lieu de l’expérimentation</b><br>
-    Projet mené par les <b>équipes-projet communes COATI et DIANA</b>, rattachées au <b>Centre Inria d’Université Côte d’Azur</b>, situé au : <i>2004 route des Lucioles, 06902 Sophia Antipolis, France</i>.
-
-    <br><br>
-    <b>📌 Nom du projet</b><br>
-    SWiPE X
-
-    <br><br>
-    <b>📌 Avis éthique</b><br>
-    Ce projet a reçu un <b>avis favorable du Comité Opérationnel d’Évaluation des Risques Légaux et Éthiques (COERLE) d’Inria</b>.
-
-    <br><br>
-    <b>📌 Participation volontaire</b><br>
-    Votre participation à ce projet est <b>entièrement volontaire</b>.  
-    Après avoir pris connaissance de « l’Avis sur la collecte de données » ci-dessous, votre acceptation de ce formulaire vaut consentement libre, éclairé et sans contrainte.  
-    <br>
-    Si des informations nécessaires à votre prise de décision vous manquent, vous pouvez contacter la personne référente indiquée ci-dessous.
-
-    <br><br>
-    <hr>
-
-    <b>🔐 AVIS SUR LA COLLECTE DE DONNÉES</b><br><br>
-
-    <b>📌 Objet de la collecte</b><br>
-    Cette collecte de données vise à analyser les interactions des utilisateurs avec les vidéos courtes afin d’améliorer la conception et les performances des plateformes de vidéos courtes.
-
-    <br><br>
-    <b>📌 Données collectées</b><br>
-    L’extension enregistre :
-    <ul style="padding-left: 25px; margin-top:5px; margin-bottom:5px;">
-      <li>Les interactions avec les vidéos Shorts (lecture, pause, reprise, saut, swipe, j’aime/pas j’aime, partage, arrêt, re-visionnage)</li>
-      <li>Les caractéristiques des vidéos (identifiant, chaîne, catégorie, durée, résolution, temps de visionnage)</li>
-      <li>Les indicateurs de qualité de service (temps de démarrage, interruptions)</li>
-    </ul>
-
-    <br>
-    <b>📌 Conditions de participation</b><br>
-    La participation est réservée aux personnes âgées de <b>18 ans ou plus</b>.  
-    Les personnes mineures doivent désinstaller l’extension.
-
-    <br><br>
-    <b>📌 Utilisation des données</b><br>
-    Les données seront exploitées uniquement sous forme <b>anonymisée et agrégée</b> à des fins de recherche scientifique, de publications et de présentations académiques.
-
-    <br><br>
-    <b>📌 Conservation et protection des données</b><br>
-    Les données sont collectées de manière anonyme et stockées sur un support chiffré et protégé par mot de passe pendant <b>15 ans</b>, conformément aux exigences réglementaires en matière de recherche.
-
-    <br><br>
-    <b>📌 Droits des participants</b><br>
-    Cette étude est conforme au RGPD.  
-    En raison de l’anonymisation des données, les droits d’accès, de rectification et de suppression ne peuvent pas être exercés après la collecte.
-
-    <br><br>
-    <b>📩 Contact</b><br>
-    Pour toute question relative au projet ou à la collecte des données, vous pouvez contacter :  
-    <b>ABOU LTAIF Jamil – jamil.abou-ltaif@inria.fr</b>
-
-    <br><br>
-    </div>
-    `,
-    consentQuestion: "Acceptez-vous de participer à cette étude ?",
-    yes: "✅ Oui",
-    no: "❌ Non",
-    surveyTitle: "📝 Questionnaire rapide",
-    surveyText: "Veuillez répondre à quelques questions courtes :",
-    submit: "Envoyer ✅",
-    alertIncomplete: "⚠️ Veuillez répondre à toutes les questions obligatoires avant de soumettre.",
-    q1: "1. À quelle fréquence regardez-vous les YouTube Shorts ?",
-    q1Options: ["-- Sélectionner --","Quotidien","Plusieurs fois par semaine","Rarement","Jamais","Je préfère ne pas répondre"],
-    q2: "2. Quel appareil utilisez-vous habituellement ?",
-    q2Options: ["-- Sélectionner --","Ordinateur de bureau","Ordinateur portable","Smartphone","Tablette","Je préfère ne pas répondre"],
-    q3: "3. Quel type de contenu préférez-vous ?",
-    q3Options: ["-- Sélectionner --","Comédie & Divertissement","Mode & Style de vie","Films & Animation","Science & Technologie","Jeux vidéo","Sports","Je préfère ne pas répondre"],
-    q4: "4. Votre tranche d'âge ?",
-    q4Options: ["-- Sélectionner --","18-25","26-35","36 ans et plus","Je préfère ne pas répondre"],
-    q5: "5. Interagissez-vous souvent avec les Shorts ?",
-    q5Options: ["-- Sélectionner --","Aimer ou ne pas aimer","Commenter les vidéos","Partager avec d'autres","Toutes les réponses ci-dessus","Je regarde généralement sans interagir","Je préfère ne pas répondre"],
-  }
-};
-
-// ================== LANGUAGE ==================
-let selectedLang = localStorage.getItem("swipeLang") || (navigator.language.startsWith("fr") ? "fr" : "en");
-let consent = localStorage.getItem("swipeConsent");
-
-// ================== GLOBAL USER & SESSION ID ==================
-let userId = localStorage.getItem("swipeUserId");
-
-if (!userId) {
-  userId = crypto.randomUUID();
-  localStorage.setItem("swipeUserId", userId);
-
-  // ADD THIS (important)
-  chrome.storage.local.set({ swipeUserId: userId });
-} else {
-  // ensure sync exists
-  chrome.storage.local.set({ swipeUserId: userId });
-}
-
-let sessionId = crypto.randomUUID();
-
-// For backward compatibility (some parts may use window._swipeUserId)
-window._swipeUserId = userId;
-window._swipeSessionId = sessionId;
-
-
-// ================== CONSENT POPUP ==================
-function showConsentPopup() {
-  const t = translations[selectedLang];
-
-  // Remove existing popup if any
-  const old = document.getElementById("swipe-consent-popup");
-  if (old) old.remove();
-
-  const popup = document.createElement("div");
-  popup.id = "swipe-consent-popup";
-  popup.style.cssText = `
-    position: fixed;
-    inset: 0;
-    margin: auto;
-    width: min(95vw, 980px);
-    height: min(90vh, 900px);
-    background: #fff;
-    border: 2px solid #444;
-    border-radius: 14px;
-    box-shadow: 0 6px 30px rgba(0,0,0,0.35);
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    font-family: Arial, sans-serif;
-    font-size: clamp(14px, 1.1vw, 17px);
-  `;
-
-  popup.innerHTML = `
-    <!-- TITLE -->
-    <h2 style="
-      margin: 10px 0 5px 0;
-      font-size: 24px;
-      text-align: center;
-    ">
-      ${t.consentTitle}
-    </h2>
-
-    <!-- LANGUAGE -->
-    <div style="text-align:center; margin-bottom:15px;">
-      <p style="margin:8px 0;">
-        Select language / Choisir la langue
-      </p>
-      <select id="lang-select" style="
-        padding:6px 10px;
-        font-size: 0.9em;
-        width: auto;
-      ">
-        <option value="en" ${selectedLang==="en"?"selected":""}>English</option>
-        <option value="fr" ${selectedLang==="fr"?"selected":""}>Français</option>
-      </select>
-    </div>
-
-    <!-- SCROLLABLE TEXT -->
-    <div id="consent-content" style="
+    header h1 {
+      margin: 0 1rem;
+      font-size: 3rem;
+      color: #fff;
       flex: 1;
-      overflow-y: auto;
-      padding: 20px 35px;
-      margin: 10px 20px;
-      border: 1px solid #ddd;
-      text-align: left;
-      line-height: 1.55;
-    ">
-      ${t.consentText}
-    </div>
+    }
+    
+    body h2 {
+      color: #156962;
+    }
 
-    <!-- QUESTION -->
-    <p style="
-      text-align: center;
+    .install-link {
+      background-color: #F8FAF9;
+      color: #0F766E;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
       font-weight: bold;
-      margin: 15px 0 5px 0;
-    ">
-      ${t.consentQuestion}
+      transition: 0.3s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      text-align: left;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto;   
+      width: 150px;
+      height: auto;
+    }
+
+    .tagline {
+      text-align: center;
+      margin: 0.3rem 0 1rem 0;
+      color: #0F766E;
+      font-size: 1.1rem;
+    }
+
+
+    .lang-switch {
+      margin: 0;        
+      text-align: center;
+    }
+
+
+    .lang-switch button {
+      margin: 0 5px;
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #0F766E;
+      color: #fff;
+      font-weight: bold;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+
+    .lang-content {
+      display: none;
+    }
+
+    .figures {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .figure {
+      flex: 1 1 45%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 0.5rem;
+    }
+
+    .figure figcaption {
+      font-size: 1rem;
+      color: #555;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .popup-scale {
+      width: min(420px, 100%);
+      aspect-ratio: 9 / 16; /* phone-like popup ratio */
+    }
+
+    .popup-scale iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+      background: transparent;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 1rem;
+      color: #666;
+      text-align: center;
+    }
+
+    @media screen and (max-width: 600px) {
+      .figure {
+        flex: 1 1 100%;
+      }
+
+      .popup-scale {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .popup-scale {
+        padding: 0 8px;
+        box-sizing: border-box;
+      }
+
+      .figure figcaption {
+        font-size: 0.9rem;
+        margin-top: 0.75rem;
+      }
+    }
+    .affiliation-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;             
+      justify-content: center; 
+      align-items: center;
+      margin-top: 15px;
+      text-align: center;     
+    }
+    
+    .affiliation-logos img {
+      height: 60px;            
+      width: auto;
+      opacity: 0.85;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    
+    .affiliation-logos img:hover {
+      opacity: 1;
+      transform: scale(1.05);  /* subtle nice effect */
+    }
+
+  </style>
+</head>
+
+<body>
+<header> 
+  <div style="display:flex; align-items:center; flex-wrap:wrap;"> 
+    <h1>SWiPE X</h1> 
+  </div> 
+  <a class="install-link" href="https://github.com/JamilAL01/swipe_extension_server/releases/tag/v5.0-Test" target="_blank"> 
+    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 0.5rem;"> <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53 .63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27 c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg> Install Extension 
+  </a> 
+</header>
+
+<main>
+  <img src="icon.svg" alt="SWiPE X Logo" class="logo">
+  
+  <p class="tagline">
+  <strong> Turning everyday swipes into meaningful research</strong>
+  </p>
+
+
+  <div class="lang-switch">
+    <button onclick="showLang('en')">English</button>
+    <button onclick="showLang('fr')">Français</button>
+  </div>
+
+  <div id="en" class="lang-content">
+    <h2>Project Objective 🎯</h2>
+    <p>SWiPE X is a browser extension that analyzes anonymous user behavior while watching short videos (e.g., YouTube Shorts) to improve recommendation system performance.</p>
+
+    <h2>Data Collected 🫟</h2>
+    <ul>
+      <li>Anonymous user interactions: play, pause, skip, swipe, like/dislike, share, stop, rewatch.</li>
+      <li>Basic video information: ID, channel, category, resolution, duration, watch time.</li>
+      <li>Network performance indicators: start-up time, interruptions (“stalls”).</li>
+    </ul>
+
+    <h2>Consent and Participation 🤝🏼</h2>
+    <p>
+    Data collection occurs only after you explicitly accept the consent form during installation or first use of the extension. No data is collected before consent is given.<br>
+    Participation is voluntary, and you may stop participating at any time by disabling or uninstalling the extension.
     </p>
 
-    <!-- BUTTONS -->
-    <div style="
-      text-align: center;
-      margin-bottom: 15px;
-    ">
-      <button id="consent-yes" style="
-        margin: 8px 12px;
-        padding: 10px 26px;
-        cursor: pointer;
-        font-size: 1em;
-      ">
-        ${t.yes}
-      </button>
-
-      <button id="consent-no" style="
-        margin: 8px 12px;
-        padding: 10px 26px;
-        cursor: pointer;
-        font-size: 1em;
-      ">
-        ${t.no}
-      </button>
-    </div>
-  `;
-
-
-  document.body.appendChild(popup);
-
-  // Language change handler
-  document.getElementById("lang-select").onchange = (e) => {
-    selectedLang = e.target.value;
-    localStorage.setItem("swipeLang", selectedLang);
-    showConsentPopup(); // re-render popup in new language
-  };
-
-  document.getElementById("consent-yes").onclick = () => {
-    localStorage.setItem("swipeConsent","yes");
-    consent = "yes";
-    popup.remove();
-    window._swipeConsentDismissedAt = performance.now();  
-    console.log("[SwipeExtension] User consented ✅");
-    showSurveyPopup();
-  };
-
-
-  document.getElementById("consent-no").onclick = () => {
-    localStorage.setItem("swipeConsent","no");
-    consent = "no";
-    popup.remove();
-    console.log("[SwipeExtension] User declined ❌");
-  };
-}
-
-// ================== SERVICE - YOUR VOICE --> YOUR CONTROL ==================
-
-// SWiPE X Content Script
-let recognition;
-let isLazyModeActive = false;
-let commandCooldown = false;
-
-let lastActionTime = 0;
-let autoNextInterval = null;
-let handledVideoId = null;
-let voiceCommandTriggered = false;
-
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.lazyMode !== undefined) {
-    isLazyModeActive = msg.lazyMode;
-
-    if (isLazyModeActive) initRecognition();
-    else stopRecognition();
-  }
-});
-
-
-function isSwipeCommand(text) {
-  const SWIPE = new Set([
-    "swipe",
-    "skip",
-    "next",
-    "nekst",
-    "neckst",
-    "nex",
-    "go next"
-  ]);
-
-  return SWIPE.has(text);
-}
-
-function isXCommand(text) {
-  const X = new Set([
-    "x",
-    "ex",
-    "eks",
-    "iks",
-    "reject",
-    "remove"
-    // "dont recommend",
-    // "not recommend"
-  ]);
-
-  return X.has(text);
-}
-
-function triggerCommand(action, label) {
-  commandCooldown = true;
-  lastActionTime = Date.now(); // user acted
-
-  action();
-  updateLastCommandUI(label);
-
-  setTimeout(() => {
-    commandCooldown = false;
-  }, 700);
-}
-
-
-function initRecognition() {
-  if (recognition) return;
-
-  recognition = new webkitSpeechRecognition();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 1;
-  recognition.lang = "en-US";
-
-  recognition.onresult = (event) => {
-    if (!isLazyModeActive || commandCooldown) return;
-
-    let transcript =
-      event.results[event.results.length - 1][0].transcript
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s]/g, "")
-        .replace(/\s+/g, " ");
-
-    console.log("Heard:", transcript);
-
-    // SAFE PHONETIC MATCHING
-    if (isSwipeCommand(transcript)) {
-      triggerCommand(swipeVideo, "Swiped");
-    }
-
-    if (isXCommand(transcript)) {
-      triggerCommand(markNotRecommended, "Not Recommended");
-    }
-  };
-
-  recognition.onend = () => {
-    if (isLazyModeActive) recognition.start();
-  };
-
-  lastActionTime = Date.now();
-  recognition.start();
-  startAutoNextWatcher();
-}
-
-
-function stopRecognition() {
-  if (recognition) {
-    recognition.onresult = null;
-    recognition.onend = null;
-    recognition.abort();
-    recognition = null;
-  }
-
-  if (autoNextInterval) {
-    clearInterval(autoNextInterval);
-    autoNextInterval = null;
-  }
-
-  console.log("SWiPE X stopped");
-}
-
-function startAutoNextWatcher() {
-  if (autoNextInterval) return;
-
-  autoNextInterval = setInterval(() => {
-    if (!isLazyModeActive) return;
-
-    const video = document.querySelector("video");
-    if (!video || !video.duration || isNaN(video.duration)) return;
-
-    const videoId =
-      new URLSearchParams(location.search).get("v") || null;
-
-    // New video → reset state
-    if (videoId !== handledVideoId) {
-      handledVideoId = videoId;
-      lastActionTime = Date.now();
-      return;
-    }
-
-    const progress = video.currentTime / video.duration;
-    const idleTime = Date.now() - lastActionTime;
-
-    // 🔒 STRICT CONDITIONS (this prevents mid-video skips)
-    if (progress >= 0.98 && idleTime >= 3000) {
-      console.log("SWiPE X: Auto-next at end");
-      lastActionTime = Date.now(); // prevent loop
-      swipeVideo();
-    }
-  }, 1000);
-}
-
-// Popup Notification
-function updateLastCommandUI(commandText) {
-  chrome.runtime.sendMessage({ lastCommand: commandText });
-}
-
-// Helper Functions
-function clickWithRetry(selector, retries = 5, delay = 300) {
-  const el = document.querySelector(selector);
-  if (el) {
-    el.click();
-    return true;
-  } else if (retries > 0) {
-    setTimeout(() => clickWithRetry(selector, retries - 1, delay), delay);
-  } else {
-    console.log("SWiPE X: Element not found:", selector);
-  }
-}
-
-function handleVoiceCommand(text) {
-  console.log("SWiPE X processing:", text);
-
-  if (text.includes("swipe")) {
-    voiceCommandTriggered = true; 
-    swipeVideo();
-    updateLastCommandUI("Swiped ➡️");
-    return;
-  }
-
-  if (
-    text.includes("x") ||
-    text.includes("ex") ||
-    text.includes("eks")
-  ) {
-    voiceCommandTriggered = true; //  mark as used
-    markNotRecommended();
-    updateLastCommandUI("Not Recommended ❌");
-    return;
-  }
-
-  console.log("SWiPE X: No matching command");
-}
-
-// ----- Function: Swipe Video -----
-function swipeVideo() {
-  console.log("SWiPE X: Triggering next video (real button)");
-
-  const nextBtn =
-    document.querySelector('button[aria-label="Next video"]') ||
-    document.querySelector('yt-icon-button[aria-label="Next video"]') ||
-    document.querySelector('.ytp-next-button');
-
-  if (nextBtn) {
-    nextBtn.click();
-    console.log("SWiPE X: Clicked Next button");
-  } else {
-    console.log("SWiPE X: Next button not found");
-  }
-}
-
-// ----- Function: Mark Not Recommended -----
-function markNotRecommended() {
-  const menuBtnSelector = 'ytd-menu-renderer yt-icon-button#button';
-
-  clickWithRetry(menuBtnSelector, 5, 300);
-
-  setTimeout(() => {
-
-    // 🔥 NEW YOUTUBE SHORTS MENU SELECTOR
-    const btn = Array.from(
-      document.querySelectorAll(
-        'button.ytListItemViewModelButtonOrAnchor'
-      )
-    ).find(el =>
-      el.innerText.includes("Don't recommend this channel")
-    );
-
-    if (btn) {
-      btn.click();
-
-      console.log("SWiPE X: Video marked Not Recommended");
-
-      const videoId =
-        new URLSearchParams(window.location.search).get("v") || "";
-
-      chrome.storage.local.get("notRecommendedVideos", (data) => {
-        const list = data.notRecommendedVideos || [];
-
-        list.push({
-          id: videoId,
-          timestamp: Date.now()
-        });
-
-        chrome.storage.local.set({
-          notRecommendedVideos: list
-        });
-      });
-
-    } else {
-      console.log("SWiPE X: Not Recommend button not found");
-    }
-
-  }, 500);
-}
-
-// ================== SPA PROBLEM --> SOLUTION: AUTO RELOAD ==================
-
-function autoReloadShorts() {
-  const isShorts = window.location.pathname.startsWith("/shorts/");
-  const alreadyInShorts = sessionStorage.getItem("swipex-in-shorts");
-
-  // Entering Shorts for the first time
-  if (isShorts && !alreadyInShorts) {
-    console.log("SWiPE X: Entered Shorts → Reload once");
-
-    sessionStorage.setItem("swipex-in-shorts", "true");
-    location.reload();
-  }
-
-  // If we leave Shorts, reset the flag
-  if (!isShorts && alreadyInShorts) {
-    sessionStorage.removeItem("swipex-in-shorts");
-  }
-}
-
-document.addEventListener("yt-navigate-finish", autoReloadShorts);
-
-
-// ================== SURVEY POPUP ==================
-function showSurveyPopup() {
-  if (localStorage.getItem("surveyDone")) return;
-
-  const t = translations[selectedLang];
-
-  const popup = document.createElement("div");
-  popup.id = "survey-popup";
-  popup.style = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px;
-    padding: 25px;
-    background: white;
-    border: 2px solid #444;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    z-index: 10000;
-    font-size: 16px;
-    font-family: Arial, sans-serif;
-    text-align: left;
-    max-height: 80vh;
-    overflow-y: auto;
-  `;
-
-  popup.innerHTML = `
-    <h2 style="margin-top:0; font-size:20px;">${t.surveyTitle}</h2>
-    <p>${t.surveyText}</p>
-    ${["q1","q2","q3","q4","q5"].map(q=>{
-      return `<label>${t[q]}</label><br>
-              <select id="${q}" style="width:100%; padding:5px; margin:5px 0;">
-                ${t[q+"Options"].map(opt=>`<option value="${opt}">${opt}</option>`).join('')}
-              </select><br><br>`;
-    }).join('')}
-    <button id="survey-submit" style="padding:10px 20px; cursor:pointer;">${t.submit}</button>
-  `;
-
-  document.body.appendChild(popup);
-
-  const submitBtn = document.getElementById("survey-submit");
-
-  //  Define the handler first
-  const handleSurveySubmit = () => {
-    submitBtn.disabled = true;
-
-    const answers = ["q1","q2","q3","q4","q5"].reduce((acc,key)=>{
-      acc[key] = document.getElementById(key).value;
-      return acc;
-    }, {});
-
-    if (!answers.q1 || !answers.q2 || !answers.q3 || !answers.q4 || !answers.q5 ||
-        answers.q1.startsWith("--") || answers.q2.startsWith("--") ||
-        answers.q3.startsWith("--") || answers.q4.startsWith("--") ||
-        answers.q5.startsWith("--")) {
-      alert(t.alertIncomplete);
-      submitBtn.disabled = false;
-      return;
-    }
-
-    if (!window._swipeUserId || !window._swipeSessionId) {
-      console.warn("[SwipeExtension] ❌ Survey submission delayed — user/session not initialized yet");
-      setTimeout(() => submitBtn.click(), 500);
-      return;
-    }
-
-    const screenInfo = `${window.innerWidth}x${window.innerHeight}`;
-    const deviceType = window.innerWidth <= 768 ? "mobile" :
-                  window.innerWidth <= 1024 ? "tablet" :
-                  window.innerWidth <= 1440 ? "laptop" : "desktop";
-
-    fetch(`${API_URL}/api/surveys`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json","x-api-key": API_KEY },
-      body: JSON.stringify({
-        userId: window._swipeUserId,
-        sessionId: window._swipeSessionId,
-        answers,
-        screen_size: screenInfo,
-        device_type: deviceType,
-        timestamp: new Date().toISOString()
-      })
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Survey save failed");
-        console.log("[SwipeExtension] Survey saved ✅", answers);
-        localStorage.setItem("surveyDone","true");
-        popup.remove();
-      })
-      .catch(err => {
-        console.error("[SwipeExtension] Survey error ❌", err);
-        submitBtn.disabled = false;
-      })
-      .finally(() => {
-        submitBtn.removeEventListener("click", handleSurveySubmit);
-      });
-  };
-
-  //  Clear any previous handlers and attach only once
-  submitBtn.onclick = null;
-  submitBtn.addEventListener("click", handleSurveySubmit);
-}
-
-// ================== CONSENT CHECK ==================
-if (!consent) {
-  showConsentPopup();
-} else if (consent === "yes") {
-  showSurveyPopup();
-}
-
-// ================== USER & SESSION SETUP ==================
-let currentVideo = null;
-let lastSrc = null;
-let startTime = null;
-let watchedTime = 0;
-let prevDuration = 0;
-let hasPlayed = false; 
-let lastUrl = window.location.href;
-
-// ================== HELPER FUNCTIONS ==================
-function getVideoId() {
-  const match = window.location.href.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
-  return match ? match[1] : null;
-}
-
-function saveEvent(eventData) {
-  if (consent !== "yes") return;
-
-  // Add user/session info
-  eventData.sessionId = sessionId;
-  eventData.userId = userId;
-
-  // Send the event to background script (NOT directly to gateway)
-  chrome.runtime.sendMessage({ type: "event", data: eventData });
-  console.log("[DEBUG] Event sent to background", eventData);
-}
-
-
-
-let lastKnownBitrate = null;
-
-// ================== VIDEO EVENT HOOK ==================
-function attachVideoEvents(video) {
-  if (!video || video._hooked) return;
-  video._hooked = true;
-  
-
-  console.log("SWiPE X: Hooked video");
-
-  video.addEventListener("loadedmetadata", () => {
-    prevDuration = video.duration;
-
-    // RESET FOR NEW VIDEO
-    video._lazyHandled = false;
-
-    chrome.storage.local.get("lazyMode", (data) => {
-      if (!data.lazyMode) return;
-
-      console.log("SWiPE X: Lazy mode active → full watch enabled");
-
-      // reset per video
-      video._lazyHandled = false;
-      voiceCommandTriggered = false;
-      watchedTime = 0;
-    });
-  });
-
-  // ================== FULL WATCH END LOGIC ==================
-  video.addEventListener("ended", () => {
-    if (video._lazyHandled) return;
-    video._lazyHandled = true;
-
-    const videoId = getVideoId();
-
-    if (startTime) watchedTime += (Date.now() - startTime) / 1000;
-    startTime = null;
-
-    // 📡 send full watch event
-    if (prevDuration) {
-      saveEvent({
-        type: "video-watched-100",
-        videoId,
-        src: video.src,
-        timestamp: new Date().toISOString(),
-        watchedTime: prevDuration.toFixed(2),
-        duration: prevDuration.toFixed(2),
-        percent: 100,
-      });
-    }
-
-    // ================== VOICE CONTROL ==================
-    chrome.storage.local.get("lazyMode", (data) => {
-      if (!data.lazyMode) return;
-
-      // If voice already handled → do nothing
-      if (voiceCommandTriggered) {
-        voiceCommandTriggered = false;
-        return;
-      }
-
-      console.log("SWiPE X: Auto swipe after full watch");
-      swipeVideo();
-    });
-  });
-
-  // ================== EVENTS ==================
-  video.addEventListener("play", () => {
-    setTimeout(() => {
-      const videoId = getVideoId();
-      if (!hasPlayed) {
-        saveEvent({
-          type: "video-start",
-          videoId,
-          src: video.src,
-          timestamp: new Date().toISOString()
-        });
-        hasPlayed = true;
-      } else {
-        saveEvent({
-          type: "video-resume",
-          videoId,
-          src: video.src,
-          timestamp: new Date().toISOString()
-        });
-      }
-    }, 100);
-
-    startTime = Date.now();
-  });
-
-  video.addEventListener("pause", () => {
-    if (startTime) watchedTime += (Date.now() - startTime) / 1000;
-    startTime = null;
-
-    const videoId = getVideoId();
-    const watchPercent = prevDuration
-      ? Math.min((watchedTime / prevDuration) * 100, 100)
-      : 0;
-
-    saveEvent({
-      type: "video-paused",
-      videoId,
-      src: video.src,
-      timestamp: new Date().toISOString(),
-      watchedTime: watchedTime.toFixed(2),
-      duration: prevDuration.toFixed(2),
-      percent: watchPercent.toFixed(1),
-    });
-  });
-
-  video.addEventListener("seeked", () => {
-    const videoId = getVideoId();
-    if (Math.abs(video.currentTime) < 0.01) return;
-
-    saveEvent({
-      type: "video-jump",
-      videoId,
-      src: video.src,
-      timestamp: new Date().toISOString(),
-      extra: { jumpTo: video.currentTime.toFixed(2) },
-    });
-  });
-}
-
-// ================== LIKE / DISLIKE / SHARE ==================
-function attachActionEvents() {
-  if (window._attachActionEventsInstalled) return;
-  window._attachActionEventsInstalled = true;
-
-  // Match must start with or exactly be "dislike", not just contain "like"
-  const isDislike = (btn) =>
-    btn?.matches &&
-    (
-      btn.matches('button[aria-label^="Dislike" i]') ||
-      btn.matches('button[aria-label*="dislike" i]')
-    );
-
-  const isLike = (btn) =>
-    btn?.matches &&
-    !isDislike(btn) && // ensure not a dislike
-    (
-      btn.matches('button[aria-label^="Like" i]') ||
-      btn.matches('button[aria-label*="like this video" i]')
-    );
-
-  const isShare = (btn) =>
-    btn?.matches &&
-    (
-      btn.matches('button[aria-label*="share" i]') ||
-      /share/i.test(btn.getAttribute('aria-label') || '') ||
-      /share/i.test(btn.textContent || '')
-    );
-
-  const emit = (type) => {
-    if (typeof queueEvent !== 'function') return;
-    queueEvent({
-      type,
-      videoId: typeof getVideoId === 'function' ? getVideoId() : undefined,
-      src: typeof currentVideo !== 'undefined' ? currentVideo?.src : undefined,
-    });
-  };
-
-  const attachToContainer = (container) => {
-    if (!container || container._reelHooksAttached) return;
-    container._reelHooksAttached = true;
-
-    container.addEventListener(
-      'click',
-      (ev) => {
-        const btn = ev.target.closest?.('button');
-        if (!btn || !container.contains(btn)) return;
-
-        if (isDislike(btn)) {
-          emit('video-dislike');
-        } else if (isLike(btn)) {
-          emit('video-like');
-        } else if (isShare(btn)) {
-          emit('video-share');
-        }
-      },
-      true
-    );
-  };
-
-  const tryAttachImmediate = () => {
-    const container = document.querySelector('#button-bar');
-    if (container) attachToContainer(container);
-  };
-  tryAttachImmediate();
-
-  const observer = new MutationObserver((mutations) => {
-    for (const m of mutations) {
-      for (const node of m.addedNodes) {
-        if (!(node instanceof HTMLElement)) continue;
-        if (node.matches?.('#button-bar')) {
-          attachToContainer(node);
-        } else {
-          const found = node.querySelector?.('#button-bar');
-          if (found) attachToContainer(found);
-        }
-      }
-    }
-  });
-
-  observer.observe(document.documentElement || document.body, {
-    childList: true,
-    subtree: true,
-  });
-}
-
-
-// =================  STATS ========================
-function updateStats(watchedTime, percentWatched, duration, currentBitrate = null) {
-  chrome.storage.local.get(['videosWatched', 'totalWatchedTime', 'avgPercentWatched', 'videoHistory'], (data) => {
-    const videos = (data.videosWatched || 0) + 1;
-    const totalTime = (data.totalWatchedTime || 0) + watchedTime;
-    const history = data.videoHistory || [];
-
-    const avgPercent = ((data.avgPercentWatched || 0) * (videos - 1) + percentWatched) / videos;
-
-    history.push({
-      duration,
-      percentWatched,
-      watchedTime,
-      currentBitrate,
-      timestamp: new Date().toISOString()
-    });
-
-    chrome.storage.local.set({
-      videosWatched: videos,
-      totalWatchedTime: totalTime,
-      avgPercentWatched: avgPercent,
-      videoHistory: history
-    });
-  });
-}
-
-// ================== VIEWPORT =======================
-function getVideoViewport(video) {
-  try {
-    const rect = video.getBoundingClientRect();
-    return {
-      width: Math.round(rect.width),
-      height: Math.round(rect.height),
-      aspect_ratio: (rect.width / rect.height).toFixed(2),
-      orientation: rect.width > rect.height ? "landscape" : "portrait",
-    };
-  } catch {
-    return null;
-  }
-}
-
-// ================== VIDEO VIEWPORT TRACKING ======================
-function trackViewportChanges(video) {
-  if (!video) return;
-
-  let lastViewport = { w: 0, h: 0 };
-  let currentVideoId = null;
-
-  const sendViewportEvent = (w, h) => {
-    saveEvent({
-      type: "video-viewport-change",
-      videoId: getVideoId(),
-      src: video.src,
-      timestamp: new Date().toISOString(),
-      extra: {
-        width: w,
-        height: h,
-        aspect_ratio: (w / h).toFixed(2),
-        orientation: w > h ? "landscape" : "portrait",
-      },
-    });
-    console.log(`[SwipeExtension] Viewport changed: ${w}x${h}`);
-  };
-
-  const checkViewport = () => {
-    const vp = getVideoViewport(video);
-    if (vp && (vp.width !== lastViewport.w || vp.height !== lastViewport.h)) {
-      lastViewport = { w: vp.width, h: vp.height };
-      sendViewportEvent(vp.width, vp.height);
-    }
-  };
-
-  // Initial setup when video loads
-  video.addEventListener("loadedmetadata", () => {
-    currentVideoId = getVideoId();
-    checkViewport();
-  });
-
-  // Detect window resizes or fullscreen changes
-  window.addEventListener("resize", checkViewport);
-  document.addEventListener("fullscreenchange", checkViewport);
-
-  // check every few seconds for subtle UI changes
-  setInterval(checkViewport, 5000);
-}
-
-// ================== MAX VIDEO RESOLUTION ======================
-function getMaxResolutionAndBitrate() {
-  try {
-    const script = [...document.scripts].find(s =>
-      s.textContent.includes('ytInitialPlayerResponse')
-    );
-    if (!script) return null;
-
-    const match = script.textContent.match(/ytInitialPlayerResponse\s*=\s*(\{.*?\});/);
-    if (!match) return null;
-
-    const data = JSON.parse(match[1]);
-    const adaptiveFormats = data?.streamingData?.adaptiveFormats;
-    if (!adaptiveFormats || !adaptiveFormats.length) return null;
-
-    // Only keep valid video formats
-    const videoFormats = adaptiveFormats.filter(f => f.width && f.height && f.mimeType.includes('video'));
-    if (!videoFormats.length) return null;
-
-    // Pick the one with the largest pixel count
-    const maxFmt = videoFormats.reduce((acc, fmt) => {
-      const accPixels = acc.width * acc.height;
-      const pixels = fmt.width * fmt.height;
-      return pixels > accPixels ? fmt : acc;
-    });
-
-    const maxRes = `${maxFmt.width}x${maxFmt.height}`;
-    const bitrate = maxFmt.averageBitrate || maxFmt.bitrate || null; // in bps
     
+    <h2>What You’ll See in the Extension 🫧</h2>
+    <p>
+    When you install SWiPE X and click on the extension icon, a private dashboard opens showing a summary of your own viewing behavior.
+    This information is visible only to you.
+    </p>
 
-    return { maxRes, bitrate };
-  } catch (err) {
-    console.warn('[SwipeExtension] Failed to parse ytInitialPlayerResponse:', err);
-    return null;
-  }
+    <ul>
+      <li>Total number of short videos watched</li>
+      <li>Total watch time</li>
+      <li>Average watch percentage across videos</li>
+      <li>Watch percentage per video and the engagement trend</li>
+      <li>Amount of content meaningfully watched vs. quickly skipped</li>
+    </ul>
+
+    <h2>Lazy Mode: Tap Less... Enjoy More! 🦥🎤</h2>
+
+    <p>
+      <strong>Lazy Mode</strong> is an optional feature that lets you browse YouTube Shorts with minimal interaction.
+      Once enabled, each Short is played completely and the extension automatically scrolls to the next one, providing a smooth, hands-free viewing experience.
+    </p>
+
+    <h3>What Lazy Mode Does</h3>
+    <ul>
+      <li>Automatically plays each Short until it ends.</li>
+      <li>Automatically scrolls to the next Short.</li>
+      <li>Reduces repetitive swiping and tapping.</li>
+      <li>Can be enabled or disabled at any time.</li>
+    </ul>
+
+    <h3>Voice Commands 🎤</h3>
+    <p>
+      While Lazy Mode is enabled, you can control browsing using simple voice commands:
+    </p>
+
+    <ul>
+      <li><strong>"Swipe"</strong>, <strong>"Skip"</strong>, or <strong>"Next"</strong> → Move to the next Short.</li>
+      <li><strong>"X"</strong>, <strong>"Remove"</strong>, or <strong>"Reject"</strong> → Stop recommendations from the current channel.</li>
+    </ul>
+
+    <h3>Tips 💡</h3>
+    <ul>
+      <li>Speak clearly for the best voice recognition.</li>
+      <li>If a command is not recognized, simply try again.</li>
+      <li>Keep your microphone enabled while using Lazy Mode.</li>
+    </ul>
+
+    <p>
+      <strong>Privacy:</strong> Lazy Mode is completely optional. Voice recognition is used only to detect the supported commands and does not change the anonymous data collection described on this page.
+    </p>
+
+    <h2>Why This Information Matters ⛓️‍💥</h2>
+    <p>
+    Short-form video platforms are designed to maximize attention, often without making users aware of how their time is spent.
+    SWiPE X helps you understand your own consumption patterns by turning invisible behavior into clear, measurable indicators.
+    </p>
+
+    <p>
+    By seeing how much content you truly watch versus how much you quickly scroll past, you can better understand your engagement,
+    optimize your viewing habits, and regain control over your attention.
+    </p>
+
+    <h2>How to Access Your Data 🔎 </h2>
+    <p>
+    The statistics dashboard appears only when you click on the SWiPE X extension icon in your browser.
+    It does not appear automatically and does not interrupt your browsing experience.
+    </p>
+
+    <div class="figures">
+      <figure class="figure">
+        <div class="popup-scale">
+          <iframe src="Stats-light.html" title="SWiPE X statistics popup"></iframe>
+        </div>
+        <figcaption>Example of SWiPE X statistics popup</figcaption>
+      </figure>
+    </div>
+
+    <h2>Privacy & Anonymity 🔐</h2>
+
+    <p>All data is anonymized and stored securely. No personal information such as names, emails, IP addresses, or devices is collected. Random session identifiers link actions within a session, but participants cannot be identified.</p>
+
+    <h2>Affiliations & Support 🌟</h2>
+    <p> Developed at the <b>Inria Centre at Université Côte d’Azur</b> (Inria / Université Côte d’Azur), within the COATI and DIANA teams.<br>
+      Supported by the French National Research Agency (ANR), EUR DS4H, and the France 2030 program. </p>
+
+    <div class="affiliation-logos">
+      <img src="assets/logos/DS4H.png" alt="Université Côte d’Azur">
+      <img src="assets/logos/Inria-logo.svg" alt="Inria">
+      <img src="assets/logos/i3S.png" alt="I3S">
+      <img src="assets/logos/ANR.png" alt="ANR">
+      <img src="assets/logos/FR2030_reseaux-futur.png" alt="France 2030">
+    </div>
+
+  </div>
+
+  <div id="fr" class="lang-content">
+    <h2>Objectif du projet 🎯</h2>
+    <p>SWiPE X est une extension de navigateur qui analyse anonymement le comportement des utilisateurs lors du visionnage de vidéos courtes (par exemple, YouTube Shorts) afin d’améliorer les performances des systèmes de recommandation.</p>
+
+    <h2>Données collectées 🫟</h2>
+    <ul>
+      <li>Interactions anonymisées : lecture, pause, avance, swipe, like/dislike, partage, arrêt, revisionnage.</li>
+      <li>Informations sur les vidéos : identifiant, chaîne, catégorie, résolution, durée, temps de visionnage.</li>
+      <li>Indicateurs de performance réseau : temps de démarrage, interruptions (« stalls »).</li>
+    </ul>
+
+    <h2>Consentement et participation 🤝🏼</h2>
+    <p>
+    La collecte de données a lieu uniquement après que vous avez explicitement accepté le formulaire de consentement lors de l’installation ou de la première utilisation de l’extension.<br>
+    La participation est volontaire et vous pouvez y mettre fin à tout moment en désactivant ou en désinstallant l’extension.<br>
+    Aucune donnée n’est collectée avant l’obtention du consentement.
+    </p>
+
+
+    <h2>Ce que vous verrez dans l’extension 🫧</h2>
+    <p>
+    Lorsque vous installez SWiPE X et cliquez sur l’icône de l’extension, un tableau de bord privé s’ouvre et présente un résumé de votre propre comportement de visionnage.
+    Ces informations ne sont visibles que par vous.
+    </p>
+
+    <ul>
+      <li>Nombre total de vidéos courtes visionnées</li>
+      <li>Temps total de visionnage</li>
+      <li>Pourcentage moyen de visionnage sur l’ensemble des vidéos</li>
+      <li>Pourcentage de visionnage par vidéo et évolution de l’engagement</li>
+      <li>Quantité de contenu réellement regardé par rapport au contenu rapidement ignoré</li>
+    </ul>
+
+    <h2>Lazy Mode : Touchez moins... Profitez davantage ! 🦥🎤</h2>
+
+    <p>
+      Le <strong>Lazy Mode</strong> est une fonctionnalité optionnelle qui vous permet de parcourir les YouTube Shorts avec un minimum d'interactions.
+      Une fois activé, chaque Short est lu jusqu'à la fin et l'extension fait automatiquement défiler vers la vidéo suivante, offrant une expérience fluide et mains libres.
+    </p>
+
+    <h3>Fonctionnement</h3>
+    <ul>
+      <li>Lecture automatique de chaque Short jusqu'à sa fin.</li>
+      <li>Défilement automatique vers le Short suivant.</li>
+      <li>Réduit les gestes répétitifs de balayage et les clics.</li>
+      <li>Peut être activé ou désactivé à tout moment.</li>
+    </ul>
+
+    <h3>Commandes vocales 🎤</h3>
+    <p>
+      Lorsque le Lazy Mode est activé, vous pouvez contrôler la navigation grâce à des commandes vocales simples :
+    </p>
+
+    <ul>
+      <li><strong>« Swipe »</strong>, <strong>« Skip »</strong> ou <strong>« Next »</strong> → Passer au Short suivant.</li>
+      <li><strong>« X »</strong>, <strong>« Remove »</strong> ou <strong>« Reject »</strong> → Ne plus recevoir de recommandations de la chaîne en cours.</li>
+    </ul>
+
+    <h3>Conseils 💡</h3>
+    <ul>
+      <li>Parlez clairement pour une meilleure reconnaissance vocale.</li>
+      <li>Si une commande n'est pas détectée, répétez-la.</li>
+      <li>Gardez votre microphone activé pendant l'utilisation du Mode Paresseux.</li>
+    </ul>
+
+    <p>
+      <strong>Confidentialité :</strong> Le Lazy Mode est entièrement optionnel. La reconnaissance vocale est utilisée uniquement pour détecter les commandes prises en charge et ne modifie pas la collecte de données anonymisées décrite sur cette page.
+    </p>
+
+    <h2>Pourquoi ces informations sont importantes ⛓️‍💥</h2>
+    <p>
+    Les plateformes de vidéos courtes sont conçues pour maximiser l’attention, souvent sans rendre les utilisateurs conscients de la manière dont leur temps est réellement utilisé.
+    SWiPE X vous aide à mieux comprendre vos habitudes de consommation en transformant des comportements invisibles en indicateurs clairs et mesurables.
+    </p>
+
+    <p>
+    En visualisant la part de contenu que vous regardez réellement par rapport à celui que vous faites défiler rapidement, vous pouvez mieux comprendre votre engagement,
+    optimiser vos habitudes de visionnage et reprendre le contrôle de votre attention.
+    </p>
+
+    <h2>Comment accéder à vos données 🔎</h2>
+    <p>
+    Le tableau de bord statistique apparaît uniquement lorsque vous cliquez sur l’icône de l’extension SWiPE X dans votre navigateur.
+    Il ne s’affiche pas automatiquement et n’interrompt pas votre expérience de navigation.
+    </p>
+    
+    <div class="figures">
+      <figure class="figure">
+        <div class="popup-scale">
+          <iframe src="Stats-light.html" title="SWiPE X statistics popup"></iframe>
+        </div>
+        <figcaption>Example of SWiPE X statistics popup</figcaption>
+      </figure>
+    </div>
+
+    <h2>Confidentialité et anonymat 🔐</h2>
+    <p>Toutes les données sont anonymisées et stockées de manière sécurisée. Aucune information personnelle (nom, email, IP, appareil) n’est collectée. Des identifiants de session aléatoires relient les actions dans une même session, mais il est impossible d’identifier les participants.</p>
+
+    <h2>Affiliations & Financement 🌟</h2>
+    <p> Développé au <b>Centre Inria d’Université Côte d’Azur</b> (Inria / Université Côte d’Azur), au sein des équipes COATI et DIANA.<br>
+        Financé par l’Agence Nationale de la Recherche (ANR), EUR DS4H et le programme France 2030.</p>
+
+    <div class="affiliation-logos">
+      <img src="assets/logos/DS4H.png" alt="Université Côte d’Azur">
+      <img src="assets/logos/Inria-logo.svg" alt="Inria">
+      <img src="assets/logos/i3S.png" alt="I3S">
+      <img src="assets/logos/ANR.png" alt="ANR">
+      <img src="assets/logos/FR2030_reseaux-futur.png" alt="France 2030">
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 SWiPE X - Chrome Extension
+</footer>
+
+<script>
+function showLang(lang) {
+  document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+  document.getElementById('fr').style.display = lang === 'fr' ? 'block' : 'none';
 }
+showLang('en');
+</script>
 
-// ================== VIDEO RESOLUTION & BITRATE TRACKING ======================
-function trackVideoResolution(video) {
-  if (!video) return;
+</body>
+</html>
 
-  let lastWidth = 0;
-  let lastHeight = 0;
-  let allowChanges = false;
-  let currentVideoId = null;
-  let resolutionInterval = null;
-  let timeoutId = null;
 
-  const cleanup = () => {
-    clearInterval(resolutionInterval);
-    clearTimeout(timeoutId);
-    resolutionInterval = null;
-    allowChanges = false;
-  };
-
-  const startResolutionTracking = () => {
-    timeoutId = setTimeout(() => {
-      currentVideoId = getVideoId();
-      if (!currentVideoId) return;
-
-      const currentWidth = video.videoWidth;
-      const currentHeight = video.videoHeight;
-
-      // Parse ytInitialPlayerResponse
-      const script = [...document.scripts].find(s =>
-        s.textContent.includes("ytInitialPlayerResponse")
-      );
-      if (!script) return;
-
-      const match = script.textContent.match(/ytInitialPlayerResponse\s*=\s*(\{.*?\});/);
-      if (!match) return;
-
-      const data = JSON.parse(match[1]);
-      const adaptiveFormats = data?.streamingData?.adaptiveFormats || [];
-
-      // Video-only formats
-      const videoFormats = adaptiveFormats.filter(f => f.mimeType.includes("video"));
-      if (!videoFormats.length) return;
-
-      // Find max resolution + bitrate + codec
-      const maxFmt = videoFormats.reduce(
-        (acc, fmt) => (fmt.bitrate || 0) > (acc.bitrate || 0) ? fmt : acc,
-        {}
-      );
-      const maxRes = maxFmt.width && maxFmt.height
-        ? `${maxFmt.width}x${maxFmt.height}`
-        : `${currentWidth}x${currentHeight}`;
-      
-      // Log initial
-      saveEvent({
-        type: "video-resolution",
-        videoId: currentVideoId,
-        src: video.src,
-        timestamp: new Date().toISOString(),
-        extra: {
-          current: `${currentWidth}x${currentHeight}`,
-          max: maxRes,
-          viewport: getVideoViewport(video),
-        },
-      });
-
-      allowChanges = true;
-      lastWidth = currentWidth;
-      lastHeight = currentHeight;
-
-      // Periodic resolution tracking
-      resolutionInterval = setInterval(() => {
-        if (!allowChanges || !currentVideoId || video.readyState < 2) return;
-
-        const w = video.videoWidth;
-        const h = video.videoHeight;
-
-        if ((w !== lastWidth || h !== lastHeight) && w && h) {
-          lastWidth = w;
-          lastHeight = h;
-
-          const fmt = videoFormats.find(f => f.width === w && f.height === h);
-          const currentBitrateChange = fmt
-            ? (fmt.averageBitrate || fmt.bitrate)
-            : null;
-
-          saveEvent({
-            type: "video-resolution-change",
-            videoId: currentVideoId,
-            src: video.src,
-            timestamp: new Date().toISOString(),
-            extra: {
-              width: w,
-              height: h,
-              viewport: getVideoViewport(video),
-            },
-          });
-        }
-      }, 2000);
-    }, 100);
-  };
-
-  video.addEventListener("loadedmetadata", () => {
-    cleanup();
-    startResolutionTracking();
-  });
-
-  video.addEventListener("ended", cleanup);
-}
-
-// ============= START-UP DELAY & STALLS ================
-function attachStallAndStartupTracking(video) {
-  if (video._stallStartupHooked) return;
-  video._stallStartupHooked = true;
-
-  //const videoId = getVideoId();
-
-  let firstPlayTime = null;
-  let stallStart = null;
-
-  // -------- STARTUP DELAY ----------
-  const startupStart = performance.now();
-
-  const onPlayingFirst = () => {
-    if (!firstPlayTime) {
-      firstPlayTime = performance.now();
-      let startupDelay = (firstPlayTime - startupStart) / 1000;
-
-      // Subtract any "survey popup" time if needed
-      const popupDismissedAt = window._swipeConsentDismissedAt || null;
-      if (popupDismissedAt && popupDismissedAt > startupStart) {
-        startupDelay = Math.max(0, (firstPlayTime - popupDismissedAt) / 1000);
-      }
-
-      if (startupDelay > 0.2) {  // ignore tiny startup delays
-        saveEvent({
-          type: "video-startup-delay",
-          videoId: getVideoId(),
-          timestamp: new Date().toISOString(),
-          extra: { startupDelay: startupDelay.toFixed(2) }
-        });
-        console.log(`[SwipeExtension] Startup delay sent: ${startupDelay.toFixed(2)}s`);
-      }
-
-      video.removeEventListener("playing", onPlayingFirst);
-    }
-  };
-
-  video.addEventListener("playing", onPlayingFirst);
-
-  // -------- STALL DETECTION ----------
-  const onStalled = () => {
-    // Ignore stalls before first playback
-    if (!firstPlayTime) return;
-    if (stallStart === null) {
-      stallStart = performance.now();
-      console.log("[SwipeExtension] Stall started…");
-    }
-  };
-
-  const onResume = () => {
-    if (stallStart !== null) {
-      const stallDuration = (performance.now() - stallStart) / 1000;
-      stallStart = null;
-
-      if (stallDuration > 0.2) {  // filter out micro-stalls
-        saveEvent({
-          type: "video-stall",
-          videoId:getVideoId(),
-          timestamp: new Date().toISOString(),
-          extra: { stallDuration: stallDuration.toFixed(2) }
-        });
-        console.log(`[SwipeExtension] Stall ended: ${stallDuration.toFixed(2)}s`);
-      }
-    }
-  };
-
-  video.addEventListener("waiting", onStalled);
-  video.addEventListener("stalled", onStalled);
-  video.addEventListener("playing", onResume);
-  video.addEventListener("timeupdate", onResume);
-}
-// ================== OBSERVE VIDEO CHANGES ==================
-let eventQueue = [];
-let isSaving = false;
-
-async function processQueue() {
-  if (isSaving || eventQueue.length === 0) return;
-  isSaving = true;
-
-  const event = eventQueue.shift();
-  try {
-    await saveEvent(event); // assume returns Promise or wrap it
-  } catch (err) {
-    console.error("Failed to save event:", err);
-  } finally {
-    isSaving = false;
-    // small delay to maintain timestamp order
-    setTimeout(processQueue, 50);
-  }
-}
-
-function queueEvent(evt) {
-  evt.timestamp = new Date().toISOString();
-  eventQueue.push(evt);
-  processQueue();
-}
-
-const observer = new MutationObserver(() => {
-  const video = document.querySelector("video");
-  if (!video) return;
-
-  if (!video._resolutionHooked) {
-    video._resolutionHooked = true;
-    attachStallAndStartupTracking(video);
-    const videoId = getVideoId();
-    trackVideoResolution(video, videoId);
-    trackViewportChanges(video);
-  }
-
-  // === Detect new video ===
-  if (video.src && video.src !== lastSrc) {
-    const videoId = getVideoId();
-
-    // --- Stop previous video if any ---
-    if (currentVideo && startTime) {
-      watchedTime += (Date.now() - startTime) / 1000;
-      const duration = prevDuration || currentVideo.duration || 0;
-      const percent = duration
-        ? Math.min((watchedTime / duration) * 100, 100).toFixed(1)
-        : "0";
-
-      queueEvent({
-        type: "video-stopped",
-        videoId: getVideoId(),
-        src: currentVideo.src,
-        watchedTime: watchedTime.toFixed(2),
-        duration: duration.toFixed(2),
-        percent,
-      });
-
-      if (duration > 0) {
-        setTimeout(() => {
-          updateStats(watchedTime, parseFloat(percent), duration);
-        }, 100);
-      }
-    }
-
-    // --- Transition event ---
-    if (lastSrc) {
-      queueEvent({
-        type: "swiped-to-new-video",
-        videoId,
-        src: video.src,
-        extra: { previous: lastSrc },
-      });
-    }
-
-    // --- Start new video ---
-    currentVideo = video;
-    lastSrc = video.src;
-    startTime = Date.now();
-    watchedTime = 0;
-    prevDuration = video.duration || 0;
-    hasPlayed = false;
-
-    // queueEvent({
-    //   type: "video-start",
-    //   videoId,
-    //   src: video.src,
-    // });
-
-    attachVideoEvents(video);
-    attachActionEvents();
-  }
-});
-
-observer.observe(document.body, { childList: true, subtree: true });
-
-// ================== RE-HOOK ON URL CHANGE ==================
-setInterval(() => {
-  const video = document.querySelector("video");
-
-  if (!video) return;
-
-  chrome.storage.local.get("lazyMode", (data) => {
-    if (!data.lazyMode) return;
-
-    // If video not progressing → force skip
-    if (video.currentTime < 0.5 && !video.paused) return;
-
-    if (video.paused) {
-      video.play().catch(() => {});
-    }
-  });
-}, 2000);
 
 

@@ -80,12 +80,65 @@
       width: 150px;
       height: auto;
     }
-
+    
     .tagline {
       text-align: center;
       margin: 0.3rem 0 1rem 0;
       color: #0F766E;
       font-size: 1.1rem;
+    }
+
+    .update-banner {
+      margin: 1.5rem 0 2rem;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid rgba(15, 118, 110, 0.2);
+      border-left: 6px solid #F59E42;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
+      box-shadow: 0 8px 24px rgba(15, 118, 110, 0.10);
+    }
+
+    .update-label {
+      display: inline-block;
+      margin-bottom: 0.45rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background-color: #0F766E;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .update-banner h2 {
+      margin: 0 0 0.35rem;
+      color: #0B514C;
+      font-size: 1.55rem;
+      line-height: 1.3;
+    }
+
+    .update-banner p {
+      margin: 0;
+      color: #374151;
+      font-size: 1.05rem;
+    }
+
+    .platforms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.9rem;
+    }
+
+    .platform {
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #D1E7E4;
+      color: #0F766E;
+      font-size: 0.9rem;
+      font-weight: 700;
     }
 
 
@@ -233,6 +286,17 @@
   </div>
 
   <div id="en" class="lang-content">
+    <section class="update-banner" aria-labelledby="update-title-en">
+      <span class="update-label">New update</span>
+      <h2 id="update-title-en">SWiPE X now works on TikTok and Instagram Reels</h2>
+      <p>Explore short-form videos across three major platforms while keeping the same transparent, research-focused experience.</p>
+      <div class="platforms" aria-label="Supported platforms">
+        <span class="platform">YouTube Shorts</span>
+        <span class="platform">TikTok</span>
+        <span class="platform">Instagram Reels</span>
+      </div>
+    </section>
+
     <h2>Project Objective 🎯</h2>
     <p>SWiPE X is a browser extension that analyzes anonymous user behavior while watching short videos (e.g., YouTube Shorts) to improve recommendation system performance.</p>
 
@@ -345,6 +409,17 @@
   </div>
 
   <div id="fr" class="lang-content">
+    <section class="update-banner" aria-labelledby="update-title-fr">
+      <span class="update-label">Nouveauté</span>
+      <h2 id="update-title-fr">SWiPE X fonctionne désormais sur TikTok et Instagram Reels</h2>
+      <p>Explorez les vidéos courtes sur trois grandes plateformes, tout en conservant la même expérience transparente dédiée à la recherche.</p>
+      <div class="platforms" aria-label="Plateformes prises en charge">
+        <span class="platform">YouTube Shorts</span>
+        <span class="platform">TikTok</span>
+        <span class="platform">Instagram Reels</span>
+      </div>
+    </section>
+    
     <h2>Objectif du projet 🎯</h2>
     <p>SWiPE X est une extension de navigateur qui analyse anonymement le comportement des utilisateurs lors du visionnage de vidéos courtes (par exemple, YouTube Shorts) afin d’améliorer les performances des systèmes de recommandation.</p>
 
